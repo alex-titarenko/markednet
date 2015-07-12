@@ -5,7 +5,9 @@ using System.Text;
 
 namespace MarkedNet
 {
-    public class Class1
+    public class TableCellFlags
     {
+        public bool header { get; set; }
+        public string align { get; set; }
     }
 }
