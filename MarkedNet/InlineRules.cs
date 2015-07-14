@@ -57,7 +57,7 @@ namespace MarkedNet
     /// <summary>
     /// GFM + Line Breaks Inline Grammar
     /// </summary>
-    public class BreaksInlineRules : InlineRules
+    public class BreaksInlineRules : GfmInlineRules
     {
         public override Regex br { get { return new Regex(@"^ *\n(?!\s*$)"); } }
         public override Regex text { get { return new Regex(@"^[\s\S]+?(?=[\\<!\[_*`~]|https?:\/\/| *\n|$)"); } }

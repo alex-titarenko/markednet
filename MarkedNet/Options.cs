@@ -31,6 +31,8 @@ namespace MarkedNet
 
         public bool gfm { get; set; }
 
+        public bool tables { get; set; }
+
 
         public Options()
         {
@@ -47,6 +49,7 @@ namespace MarkedNet
             smartypants = false;
             breaks = false;
             gfm = true;
+            tables = true;
         }
     }
 }
