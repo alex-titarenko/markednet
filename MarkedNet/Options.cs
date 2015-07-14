@@ -9,6 +9,10 @@ namespace MarkedNet
     {
         public Func<string, string, string> highlight { get; set; }
 
+        public Func<string, string> sanitizer { get; set; }
+
+        public Renderer renderer { get; set; }
+
         public string langPrefix { get; set; }
 
         public string headerPrefix { get; set; }
@@ -17,13 +21,32 @@ namespace MarkedNet
 
         public bool sanitize { get; set; }
 
+        public bool pedantic { get; set; }
+
+        public bool mangle { get; set; }
+
+        public bool smartypants { get; set; }
+
+        public bool breaks { get; set; }
+
+        public bool gfm { get; set; }
+
 
         public Options()
         {
+            highlight = null;
+            sanitizer = null;
+            renderer = new Renderer(this);
+
             langPrefix = "lang-";
             headerPrefix = "";
             xhtml = false;
             sanitize = false;
+            pedantic = false;
+            mangle = true;
+            smartypants = false;
+            breaks = false;
+            gfm = true;
         }
     }
 }

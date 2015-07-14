@@ -17,6 +17,11 @@ namespace MarkedNet
 
         #region Constructors
 
+        public Renderer()
+            : this(null)
+        {
+        }
+
         public Renderer(Options options)
         {
             this.options = options ?? new Options();

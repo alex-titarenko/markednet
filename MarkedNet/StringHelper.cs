@@ -13,7 +13,7 @@ namespace MarkedNet
             return Uri.UnescapeDataString(str);
         }
 
-        public static string escape(string html, bool encode)
+        public static string escape(string html, bool encode = false)
         {
             return Regex.Replace(html, !encode ? @"&(?!#?\w+;)" : @"&", "&amp;")
                 .Replace("<", "&lt;")
@@ -26,7 +26,7 @@ namespace MarkedNet
         {
             return Regex.Replace(html, @"&([#\w]+);", (Match match) =>
             {
-                var n = match.Value;
+                var n = match.Groups[1].Value;
 
                 n = n.ToLower();
                 if (n == "colon") return ":";
@@ -38,6 +38,24 @@ namespace MarkedNet
                 }
                 return String.Empty;
             });
+        }
+
+
+
+        public static string NotEmpty(IList<string> source, int index1, int index2)
+        {
+            return (source.Count > index1 && !String.IsNullOrEmpty(source[index1])) ? source[index1] : source[index2];
+        }
+
+
+        public static string ReplaceRegex(this string input, string pattern, string replacement)
+        {
+            return Regex.Replace(input, pattern, replacement);
+        }
+
+        public static IList<string> exec(this Regex regex, string src)
+        {
+            throw new NotImplementedException();
         }
     }
 }
