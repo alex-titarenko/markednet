@@ -10,15 +10,72 @@ namespace MarkedNet
     {
         public Options Options { get; set; }
 
+
+        public Marked()
+            : this(null)
+        {
+        }
+
         public Marked(Options options)
         {
-            Options = options;
+            Options = options ?? new Options();
         }
 
 
         public string Parse(string src)
         {
-            return null;
+            var highlight = Options.highlight;
+            TokensResult tokens;
+            int pending;
+            var i = 0;
+
+            try
+            {
+              tokens = BlockLexer.lex(src, Options);
+            }
+            catch (Exception)
+            {
+              throw;
+            }
+
+            pending = tokens.Length;
+
+            string @out = Parser.parse(tokens, Options);
+
+            return @out;
+
+
+  //  for (; i < tokens.length; i++) {
+  //    (function(token) {
+  //      if (token.type !== 'code') {
+  //        return --pending || done();
+  //      }
+  //      return highlight(token.text, token.lang, function(err, code) {
+  //        if (err) return done(err);
+  //        if (code == null || code === token.text) {
+  //          return --pending || done();
+  //        }
+  //        token.text = code;
+  //        token.escaped = true;
+  //        --pending || done();
+  //      });
+  //    })(tokens[i]);
+  //  }
+
+  //  return;
+  //}
+  //try {
+  //  if (opt) opt = merge({}, marked.defaults, opt);
+  //  return Parser.parse(Lexer.lex(src, opt), opt);
+  //} catch (e) {
+  //  e.message += '\nPlease report this to https://github.com/chjj/marked.';
+  //  if ((opt || marked.defaults).silent) {
+  //    return '<p>An error occured:</p><pre>'
+  //      + escape(e.message + '', true)
+  //      + '</pre>';
+  //  }
+  //  throw e;
+  //}
         }
     }
 }

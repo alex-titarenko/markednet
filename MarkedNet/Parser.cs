@@ -28,18 +28,18 @@ namespace MarkedNet
         /// <summary>
         /// Static Parse Method
         /// </summary>
-        public static string parse(IList<Token> src, IDictionary<string, LinkObj> links, Options options)
+        public static string parse(TokensResult src, Options options)
         {
             var parser = new Parser(options);
-            return parser.parse(src, links);
+            return parser.parse(src);
         }
 
         /// <summary>
         /// Parse Loop
         /// </summary>
-        public virtual string parse(IList<Token> src, IDictionary<string, LinkObj> links)
+        public virtual string parse(TokensResult src)
         {
-            this.inline = new InlineLexer(links, this.options);
+            this.inline = new InlineLexer(src.links, this.options);
             this.tokens = new Stack<Token>(src.Reverse());
 
             var @out = String.Empty;
@@ -57,7 +57,7 @@ namespace MarkedNet
         /// </summary>
         protected virtual Token next()
         {
-            return this.token = this.tokens.Pop();
+            return this.token = (this.tokens.Any()) ? this.tokens.Pop() : null;
         }
 
 

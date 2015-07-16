@@ -9,6 +9,12 @@ namespace MarkedNet
     {
         public IList<Token> tokens { get; set; }
         public IDictionary<string, LinkObj> links { get; set; }
+        public int Length { get { return tokens.Count; } }
+
+        public IEnumerable<Token> Reverse()
+        {
+            return tokens.Reverse();
+        }
 
         public TokensResult()
         {
