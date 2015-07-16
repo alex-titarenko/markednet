@@ -23,7 +23,7 @@ namespace MarkedNet
         public InlineLexer(IDictionary<string, LinkObj> links, Options options)
         {
             this.options = options ?? new Options();
-            this.renderer = options.renderer ?? new Renderer(options);
+            this.renderer = options.Renderer ?? new Renderer(options);
 
             this.links = links;
             this.rules = new NormalInlineRules();
@@ -33,9 +33,9 @@ namespace MarkedNet
                 throw new Exception("Tokens array requires a `links` property.");
             }
 
-            if (this.options.gfm)
+            if (this.options.Gfm)
             {
-                if (this.options.breaks)
+                if (this.options.Breaks)
                 {
                     this.rules = new BreaksInlineRules();
                 }
@@ -44,7 +44,7 @@ namespace MarkedNet
                     this.rules = new GfmInlineRules();
                 }
             }
-            else if (this.options.pedantic)
+            else if (this.options.Pedantic)
             {
                 this.rules = new PedanticInlineRules();
             }
@@ -55,17 +55,17 @@ namespace MarkedNet
         /// <summary>
         /// Static Lexing/Compiling Method
         /// </summary>
-        public static string output(string src, IDictionary<string, LinkObj> links, Options options)
+        public static string Output(string src, IDictionary<string, LinkObj> links, Options options)
         {
             var inline = new InlineLexer(links, options);
-            return inline.output(src);
+            return inline.Output(src);
         }
 
         /// <summary>
         /// Lexing/Compiling
         /// </summary>
         private bool inLink;
-        public virtual string output(string src)
+        public virtual string Output(string src)
         {
             var @out = String.Empty;
             LinkObj link;
@@ -76,7 +76,7 @@ namespace MarkedNet
             while (!String.IsNullOrEmpty(src))
             {
                 // escape
-                cap = this.rules.escape.exec(src);
+                cap = this.rules.Escape.Exec(src);
                 if (cap.Any())
                 {
                     src = src.Substring(cap[0].Length);
@@ -85,38 +85,38 @@ namespace MarkedNet
                 }
 
                 // autolink
-                cap = this.rules.autolink.exec(src);
+                cap = this.rules.AutoLink.Exec(src);
                 if (cap.Any())
                 {
                     src = src.Substring(cap[0].Length);
                     if (cap[2] == "@")
                     {
                         text = cap[1][6] == ':'
-                          ? this.mangle(cap[1].Substring(7))
-                          : this.mangle(cap[1]);
-                        href = this.mangle("mailto:") + text;
+                          ? this.Mangle(cap[1].Substring(7))
+                          : this.Mangle(cap[1]);
+                        href = this.Mangle("mailto:") + text;
                     }
                     else
                     {
-                        text = StringHelper.escape(cap[1]);
+                        text = StringHelper.Escape(cap[1]);
                         href = text;
                     }
-                    @out += this.renderer.link(href, null, text);
+                    @out += this.renderer.Link(href, null, text);
                     continue;
                 }
 
                 // url (gfm)
-                if (!this.inLink && (cap = this.rules.url.exec(src)).Any())
+                if (!this.inLink && (cap = this.rules.Url.Exec(src)).Any())
                 {
                     src = src.Substring(cap[0].Length);
-                    text = StringHelper.escape(cap[1]);
+                    text = StringHelper.Escape(cap[1]);
                     href = text;
-                    @out += this.renderer.link(href, null, text);
+                    @out += this.renderer.Link(href, null, text);
                     continue;
                 }
 
                 // tag
-                cap = this.rules.tag.exec(src);
+                cap = this.rules.Tag.Exec(src);
                 if (cap.Any())
                 {
                     if (!this.inLink && Regex.IsMatch(cap[0], "^<a ", RegexOptions.IgnoreCase))
@@ -128,99 +128,99 @@ namespace MarkedNet
                         this.inLink = false;
                     }
                     src = src.Substring(cap[0].Length);
-                    @out += this.options.sanitize
-                      ? (this.options.sanitizer != null)
-                        ? this.options.sanitizer(cap[0])
-                        : StringHelper.escape(cap[0])
+                    @out += this.options.Sanitize
+                      ? (this.options.Sanitizer != null)
+                        ? this.options.Sanitizer(cap[0])
+                        : StringHelper.Escape(cap[0])
                       : cap[0];
                     continue;
                 }
 
                 // link
-                cap = this.rules.link.exec(src);
+                cap = this.rules.Link.Exec(src);
                 if (cap.Any())
                 {
                     src = src.Substring(cap[0].Length);
                     this.inLink = true;
-                    @out += this.outputLink(cap, new LinkObj
+                    @out += this.OutputLink(cap, new LinkObj
                     {
-                        href = cap[2],
-                        title = cap[3]
+                        Href = cap[2],
+                        Title = cap[3]
                     });
                     this.inLink = false;
                     continue;
                 }
 
                 // reflink, nolink
-                if ((cap = this.rules.reflink.exec(src)).Any() || (cap = this.rules.nolink.exec(src)).Any())
+                if ((cap = this.rules.RefLink.Exec(src)).Any() || (cap = this.rules.NoLink.Exec(src)).Any())
                 {
                     src = src.Substring(cap[0].Length);
                     var linkStr = (StringHelper.NotEmpty(cap, 2, 1)).ReplaceRegex(@"\s+", " ");
                     
                     this.links.TryGetValue(linkStr.ToLower(), out link);
                     
-                    if (link == null || String.IsNullOrEmpty(link.href))
+                    if (link == null || String.IsNullOrEmpty(link.Href))
                     {
                         @out += cap[0][0];
                         src = cap[0].Substring(1) + src;
                         continue;
                     }
                     this.inLink = true;
-                    @out += this.outputLink(cap, link);
+                    @out += this.OutputLink(cap, link);
                     this.inLink = false;
                     continue;
                 }
 
                 // strong
-                if ((cap = this.rules.strong.exec(src)).Any())
+                if ((cap = this.rules.Strong.Exec(src)).Any())
                 {
                     src = src.Substring(cap[0].Length);
-                    @out += this.renderer.strong(this.output(StringHelper.NotEmpty(cap, 2, 1)));
+                    @out += this.renderer.Strong(this.Output(StringHelper.NotEmpty(cap, 2, 1)));
                     continue;
                 }
 
                 // em
-                cap = this.rules.em.exec(src);
+                cap = this.rules.Em.Exec(src);
                 if (cap.Any())
                 {
                     src = src.Substring(cap[0].Length);
-                    @out += this.renderer.em(this.output(StringHelper.NotEmpty(cap, 2, 1)));
+                    @out += this.renderer.Em(this.Output(StringHelper.NotEmpty(cap, 2, 1)));
                     continue;
                 }
 
                 // code
-                cap = this.rules.code.exec(src);
+                cap = this.rules.Code.Exec(src);
                 if (cap.Any())
                 {
                     src = src.Substring(cap[0].Length);
-                    @out += this.renderer.codespan(StringHelper.escape(cap[2], true));
+                    @out += this.renderer.Codespan(StringHelper.Escape(cap[2], true));
                     continue;
                 }
 
                 // br
-                cap = this.rules.br.exec(src);
+                cap = this.rules.Br.Exec(src);
                 if (cap.Any())
                 {
                     src = src.Substring(cap[0].Length);
-                    @out += this.renderer.br();
+                    @out += this.renderer.Br();
                     continue;
                 }
 
                 // del (gfm)
-                cap = this.rules.del.exec(src);
+                cap = this.rules.Del.Exec(src);
                 if (cap.Any())
                 {
                     src = src.Substring(cap[0].Length);
-                    @out += this.renderer.del(this.output(cap[1]));
+                    @out += this.renderer.Del(this.Output(cap[1]));
                     continue;
                 }
 
                 // text
-                cap = this.rules.text.exec(src);
+                cap = this.rules.Text.Exec(src);
                 if (cap.Any())
                 {
                     src = src.Substring(cap[0].Length);
-                    @out += this.renderer.text(StringHelper.escape(this.smartypants(cap[0])));
+                    @out += this.renderer.Text(StringHelper.Escape(this.Smartypants(cap[0])));
                     continue;
                 }
 
@@ -236,22 +236,22 @@ namespace MarkedNet
         /// <summary>
         /// Compile Link
         /// </summary>
-        protected virtual string outputLink(IList<string> cap, LinkObj link)
+        protected virtual string OutputLink(IList<string> cap, LinkObj link)
         {
-            string href = StringHelper.escape(link.href),
-            title = !String.IsNullOrEmpty(link.title) ? StringHelper.escape(link.title) : null;
+            string href = StringHelper.Escape(link.Href),
+            title = !String.IsNullOrEmpty(link.Title) ? StringHelper.Escape(link.Title) : null;
 
             return cap[0][0] != '!'
-                ? this.renderer.link(href, title, this.output(cap[1]))
-                : this.renderer.image(href, title, StringHelper.escape(cap[1]));
+                ? this.renderer.Link(href, title, this.Output(cap[1]))
+                : this.renderer.Image(href, title, StringHelper.Escape(cap[1]));
         }
 
         /// <summary>
         /// Mangle Links
         /// </summary>
-        protected virtual string mangle(string text)
+        protected virtual string Mangle(string text)
         {
-            if (!this.options.mangle) return text;
+            if (!this.options.Mangle) return text;
             var @out = String.Empty;
 
             for (int i = 0; i < text.Length; i++)
@@ -270,9 +270,9 @@ namespace MarkedNet
         /// <summary>
         /// Smartypants Transformations
         /// </summary>
-        protected virtual string smartypants(string text)
+        protected virtual string Smartypants(string text)
         {
-            if (!this.options.smartypants) return text;
+            if (!this.options.Smartypants) return text;
 
             return text
                 // em-dashes

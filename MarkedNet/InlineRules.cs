@@ -12,19 +12,41 @@ namespace MarkedNet
     /// </summary>
     public class InlineRules
     {
-          public virtual Regex escape { get { return new Regex(@"^\\([\\`*{}\[\]()#+\-.!_>])"); } }
-          public virtual Regex autolink { get { return new Regex(@"^<([^ >]+(@|:\/)[^ >]+)>"); } }
-          public virtual Regex url { get { return new Regex(""); } } // noop
-          public virtual Regex tag { get { return new Regex(@"^<!--[\s\S]*?-->|^<\/?\w+(?:""[^""]*""|'[^']*'|[^'"">])*?>"); } }
-          public virtual Regex link { get { return new Regex(@"^!?\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\(\s*<?([\s\S]*?)>?(?:\s+['""]([\s\S]*?)['""])?\s*\)"); } }
-          public virtual Regex reflink { get { return new Regex(@"^!?\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\s*\[([^\]]*)\]"); } }
-          public virtual Regex nolink { get { return new Regex(@"^!?\[((?:\[[^\]]*\]|[^\[\]])*)\]"); } }
-          public virtual Regex strong { get { return new Regex(@"^__([\s\S]+?)__(?!_)|^\*\*([\s\S]+?)\*\*(?!\*)"); } }
-          public virtual Regex em { get { return new Regex(@"^\b_((?:__|[\s\S])+?)_\b|^\*((?:\*\*|[\s\S])+?)\*(?!\*)"); } }
-          public virtual Regex code { get { return new Regex(@"^(`+)\s*([\s\S]*?[^`])\s*\1(?!`)"); } }
-          public virtual Regex br { get { return new Regex(@"^ {2,}\n(?!\s*$)"); } }
-          public virtual Regex del { get { return new Regex(""); } } // noop
-          public virtual Regex text { get { return new Regex(@"^[\s\S]+?(?=[\\<!\[_*`]| {2,}\n|$)"); } }
+        #region Fields
+
+        private static readonly Regex escape = new Regex(@"^\\([\\`*{}\[\]()#+\-.!_>])");
+        private static readonly Regex autoLink = new Regex(@"^<([^ >]+(@|:\/)[^ >]+)>");
+        private static readonly Regex url = new Regex(""); // noop
+        private static readonly Regex tag = new Regex(@"^<!--[\s\S]*?-->|^<\/?\w+(?:""[^""]*""|'[^']*'|[^'"">])*?>");
+        private static readonly Regex link = new Regex(@"^!?\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\(\s*<?([\s\S]*?)>?(?:\s+['""]([\s\S]*?)['""])?\s*\)");
+        private static readonly Regex refLink = new Regex(@"^!?\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\s*\[([^\]]*)\]");
+        private static readonly Regex noLink = new Regex(@"^!?\[((?:\[[^\]]*\]|[^\[\]])*)\]");
+        private static readonly Regex strong = new Regex(@"^__([\s\S]+?)__(?!_)|^\*\*([\s\S]+?)\*\*(?!\*)");
+        private static readonly Regex em = new Regex(@"^\b_((?:__|[\s\S])+?)_\b|^\*((?:\*\*|[\s\S])+?)\*(?!\*)");
+        private static readonly Regex code = new Regex(@"^(`+)\s*([\s\S]*?[^`])\s*\1(?!`)");
+        private static readonly Regex br = new Regex(@"^ {2,}\n(?!\s*$)");
+        private static readonly Regex del = new Regex(""); // noop
+        private static readonly Regex text = new Regex(@"^[\s\S]+?(?=[\\<!\[_*`]| {2,}\n|$)");
+
+        #endregion
+
+        #region Properties
+
+        public virtual Regex Escape { get { return escape; } }
+        public virtual Regex AutoLink { get { return autoLink; } }
+        public virtual Regex Url { get { return url; } } // noop
+        public virtual Regex Tag { get { return tag; } }
+        public virtual Regex Link { get { return link; } }
+        public virtual Regex RefLink { get { return refLink; } }
+        public virtual Regex NoLink { get { return noLink; } }
+        public virtual Regex Strong { get { return strong; } }
+        public virtual Regex Em { get { return em; } }
+        public virtual Regex Code { get { return code; } }
+        public virtual Regex Br { get { return br; } }
+        public virtual Regex Del { get { return del; } } // noop
+        public virtual Regex Text { get { return text; } }
+
+        #endregion
     }
 
     /// <summary>
@@ -39,8 +61,19 @@ namespace MarkedNet
     /// </summary>
     public class PedanticInlineRules : InlineRules
     {
-        public override Regex strong { get { return new Regex(@"^__(?=\S)([\s\S]*?\S)__(?!_)|^\*\*(?=\S)([\s\S]*?\S)\*\*(?!\*)"); } }
-        public override Regex em { get { return new Regex(@"^_(?=\S)([\s\S]*?\S)_(?!_)|^\*(?=\S)([\s\S]*?\S)\*(?!\*)"); } }
+        #region Fields
+
+        private static readonly Regex strong = new Regex(@"^__(?=\S)([\s\S]*?\S)__(?!_)|^\*\*(?=\S)([\s\S]*?\S)\*\*(?!\*)");
+        private static readonly Regex em = new Regex(@"^_(?=\S)([\s\S]*?\S)_(?!_)|^\*(?=\S)([\s\S]*?\S)\*(?!\*)");
+
+        #endregion
+
+        #region Properties
+
+        public override Regex Strong { get { return strong; } }
+        public override Regex Em { get { return em; } }
+
+        #endregion
     }
 
     /// <summary>
@@ -48,10 +81,23 @@ namespace MarkedNet
     /// </summary>
     public class GfmInlineRules : InlineRules
     {
-        public override Regex escape { get { return new Regex(@"^\\([\\`*{}\[\]()#+\-.!_>~|])"); } }
-        public override Regex url { get { return new Regex(@"^(https?:\/\/[^\s<]+[^<.,:;""')\]\s])"); } }
-        public override Regex del { get { return new Regex(@"^~~(?=\S)([\s\S]*?\S)~~"); } }
-        public override Regex text { get { return new Regex(@"^[\s\S]+?(?=[\\<!\[_*`~]|https?:\/\/| {2,}\n|$)"); } }
+        #region Fields
+
+        private static readonly Regex escape = new Regex(@"^\\([\\`*{}\[\]()#+\-.!_>~|])");
+        private static readonly Regex url = new Regex(@"^(https?:\/\/[^\s<]+[^<.,:;""')\]\s])");
+        private static readonly Regex del = new Regex(@"^~~(?=\S)([\s\S]*?\S)~~");
+        private static readonly Regex text = new Regex(@"^[\s\S]+?(?=[\\<!\[_*`~]|https?:\/\/| {2,}\n|$)");
+
+        #endregion
+
+        #region Properties
+
+        public override Regex Escape { get { return escape; } }
+        public override Regex Url { get { return url; } }
+        public override Regex Del { get { return del; } }
+        public override Regex Text { get { return text; } }
+
+        #endregion
     }
 
     /// <summary>
@@ -59,7 +105,18 @@ namespace MarkedNet
     /// </summary>
     public class BreaksInlineRules : GfmInlineRules
     {
-        public override Regex br { get { return new Regex(@"^ *\n(?!\s*$)"); } }
-        public override Regex text { get { return new Regex(@"^[\s\S]+?(?=[\\<!\[_*`~]|https?:\/\/| *\n|$)"); } }
+        #region Fields
+
+        private static readonly Regex br = new Regex(@"^ *\n(?!\s*$)");
+        private static readonly Regex text = new Regex(@"^[\s\S]+?(?=[\\<!\[_*`~]|https?:\/\/| *\n|$)");
+
+        #endregion
+
+        #region Properties
+
+        public override Regex Br { get { return br; } }
+        public override Regex Text { get { return text; } }
+
+        #endregion
     }
 }

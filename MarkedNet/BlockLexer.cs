@@ -21,9 +21,9 @@ namespace MarkedNet
 
             this.rules = new NormalBlockRules();
 
-            if (this.options.gfm)
+            if (this.options.Gfm)
             {
-                if (this.options.tables)
+                if (this.options.Tables)
                 {
                     this.rules = new TablesBlockRules();
                 }
@@ -38,16 +38,16 @@ namespace MarkedNet
         /// <summary>
         /// Static Lex Method
         /// </summary>
-        public static TokensResult lex(string src, Options options)
+        public static TokensResult Lex(string src, Options options)
         {
             var lexer = new BlockLexer(options);
-            return lexer.lex(src);
+            return lexer.Lex(src);
         }
 
         /// <summary>
         /// Preprocessing
         /// </summary>
-        protected virtual TokensResult lex(string src)
+        protected virtual TokensResult Lex(string src)
         {
             src = src
                 .ReplaceRegex(@"\r\n|\r", "\n")
@@ -55,13 +55,13 @@ namespace MarkedNet
                 .Replace("\u00a0", " ")
                 .Replace("\u2424", "\n");
 
-            return this.token(src, true);
+            return this.Token(src, true);
         }
 
         /// <summary>
         /// Lexing
         /// </summary>
-        protected virtual TokensResult token(string srcOrig, bool top)
+        protected virtual TokensResult Token(string srcOrig, bool top)
         {
             var src = Regex.Replace(srcOrig, @"^ +$", "", RegexOptions.Multiline);
             bool loose;
@@ -74,27 +74,27 @@ namespace MarkedNet
             while (!String.IsNullOrEmpty(src))
             {
                 // newline
-                if ((cap = this.rules.newline.exec(src)).Any())
+                if ((cap = this.rules.Newline.Exec(src)).Any())
                 {
                     src = src.Substring(cap[0].Length);
                     if (cap[0].Length > 1)
                     {
                         this.tokens.Add(new Token
                         {
-                            type = "space"
+                            Type = "space"
                         });
                     }
                 }
 
                 // code
-                if ((cap = this.rules.code.exec(src)).Any())
+                if ((cap = this.rules.Сode.Exec(src)).Any())
                 {
                     src = src.Substring(cap[0].Length);
                     var capStr = Regex.Replace(cap[0], @"^ {4}", "", RegexOptions.Multiline);
                     this.tokens.Add(new Token
                     {
-                        type = "code",
-                        text = !this.options.pedantic
+                        Type = "code",
+                        Text = !this.options.Pedantic
                           ? Regex.Replace(capStr, @"\n+$", "")
                           : capStr
                     });
@@ -102,67 +102,67 @@ namespace MarkedNet
                 }
 
                 // fences (gfm)
-                if ((cap = this.rules.fences.exec(src)).Any())
+                if ((cap = this.rules.Fences.Exec(src)).Any())
                 {
                     src = src.Substring(cap[0].Length);
                     this.tokens.Add(new Token
                     {
-                        type = "code",
-                        lang = cap[2],
-                        text = cap[3]
+                        Type = "code",
+                        Lang = cap[2],
+                        Text = cap[3]
                     });
                     continue;
                 }
 
                 // heading
-                if ((cap = this.rules.heading.exec(src)).Any())
+                if ((cap = this.rules.Heading.Exec(src)).Any())
                 {
                     src = src.Substring(cap[0].Length);
                     this.tokens.Add(new Token
                     {
-                        type = "heading",
-                        depth = cap[1].Length,
-                        text = cap[2]
+                        Type = "heading",
+                        Depth = cap[1].Length,
+                        Text = cap[2]
                     });
                     continue;
                 }
 
                 // table no leading pipe (gfm)
-                if (top && (cap = this.rules.nptable.exec(src)).Any())
+                if (top && (cap = this.rules.NpTable.Exec(src)).Any())
                 {
                     src = src.Substring(cap[0].Length);
 
                     var item = new Token
                     {
-                        type = "table",
-                        header = cap[1].ReplaceRegex(@"^ *| *\| *$", "").SplitRegex(@" *\| *"),
-                        align = cap[2].ReplaceRegex(@"^ *|\| *$", "").SplitRegex(@" *\| *"),
-                        cells = cap[3].ReplaceRegex(@"\n$", "").Split('\n').Select(x => new string[] { x }).ToArray()
+                        Type = "table",
+                        Header = cap[1].ReplaceRegex(@"^ *| *\| *$", "").SplitRegex(@" *\| *"),
+                        Align = cap[2].ReplaceRegex(@"^ *|\| *$", "").SplitRegex(@" *\| *"),
+                        Cells = cap[3].ReplaceRegex(@"\n$", "").Split('\n').Select(x => new string[] { x }).ToArray()
                     };
 
-                    for (i = 0; i < item.align.Count; i++)
+                    for (i = 0; i < item.Align.Count; i++)
                     {
-                        if (Regex.IsMatch(item.align[i], @"^ *-+: *$"))
+                        if (Regex.IsMatch(item.Align[i], @"^ *-+: *$"))
                         {
-                            item.align[i] = "right";
+                            item.Align[i] = "right";
                         }
-                        else if (Regex.IsMatch(item.align[i], @"^ *:-+: *$"))
+                        else if (Regex.IsMatch(item.Align[i], @"^ *:-+: *$"))
                         {
-                            item.align[i] = "center";
+                            item.Align[i] = "center";
                         }
-                        else if (Regex.IsMatch(item.align[i], @"^ *:-+ *$"))
+                        else if (Regex.IsMatch(item.Align[i], @"^ *:-+ *$"))
                         {
-                            item.align[i] = "left";
+                            item.Align[i] = "left";
                         }
                         else
                         {
-                            item.align[i] = null;
+                            item.Align[i] = null;
                         }
                     }
 
-                    for (i = 0; i < item.cells.Count; i++)
+                    for (i = 0; i < item.Cells.Count; i++)
                     {
-                        item.cells[i] = item.cells[i][0].SplitRegex(@" *\| *");
+                        item.Cells[i] = item.Cells[i][0].SplitRegex(@" *\| *");
                     }
 
                     this.tokens.Add(item);
@@ -171,37 +171,37 @@ namespace MarkedNet
                 }
 
                 // lheading
-                if ((cap = this.rules.lheading.exec(src)).Any())
+                if ((cap = this.rules.LHeading.Exec(src)).Any())
                 {
                     src = src.Substring(cap[0].Length);
                     this.tokens.Add(new Token
                     {
-                        type = "heading",
-                        depth = cap[2] == "=" ? 1 : 2,
-                        text = cap[1]
+                        Type = "heading",
+                        Depth = cap[2] == "=" ? 1 : 2,
+                        Text = cap[1]
                     });
                     continue;
                 }
 
                 // hr
-                if ((cap = this.rules.hr.exec(src)).Any())
+                if ((cap = this.rules.Hr.Exec(src)).Any())
                 {
                     src = src.Substring(cap[0].Length);
                     this.tokens.Add(new Token
                     {
-                        type = "hr"
+                        Type = "hr"
                     });
                     continue;
                 }
 
                 // blockquote
-                if ((cap = this.rules.blockquote.exec(src)).Any())
+                if ((cap = this.rules.Blockquote.Exec(src)).Any())
                 {
                     src = src.Substring(cap[0].Length);
 
                     this.tokens.Add(new Token
                     {
-                        type = "blockquote_start"
+                        Type = "blockquote_start"
                     });
 
                     var capStr = Regex.Replace(cap[0], @"^ *> ?", "", RegexOptions.Multiline);
@@ -209,30 +209,30 @@ namespace MarkedNet
                     // Pass `top` to keep the current
                     // "toplevel" state. This is exactly
                     // how markdown.pl works.
-                    this.token(capStr, top); //, true);
+                    this.Token(capStr, top); //, true);
 
                     this.tokens.Add(new Token
                     {
-                        type = "blockquote_end"
+                        Type = "blockquote_end"
                     });
 
                     continue;
                 }
 
                 // list
-                if ((cap = this.rules.list.exec(src)).Any())
+                if ((cap = this.rules.List.Exec(src)).Any())
                 {
                     src = src.Substring(cap[0].Length);
                     bull = cap[2];
 
                     this.tokens.Add(new Token
                     {
-                        type = "list_start",
-                        ordered = bull.Length > 1
+                        Type = "list_start",
+                        Ordered = bull.Length > 1
                     });
 
                     // Get each top-level item.
-                    cap = cap[0].match(this.rules.item);
+                    cap = cap[0].Match(this.rules.Item);
 
                     var next = false;
                     l = cap.Count;
@@ -252,16 +252,16 @@ namespace MarkedNet
                         if (item.IndexOf("\n ") > -1)
                         {
                             space -= item.Length;
-                            item = !this.options.pedantic
+                            item = !this.options.Pedantic
                               ? Regex.Replace(item, "^ {1," + space + "}", "", RegexOptions.Multiline)
                               : Regex.Replace(item, @"/^ {1,4}", "", RegexOptions.Multiline);
                         }
 
                         // Determine whether the next list item belongs here.
                         // Backpedal if it does not belong in this list.
-                        if (this.options.smartLists && i != l - 1)
+                        if (this.options.SmartLists && i != l - 1)
                         {
-                            b = this.rules.bullet.exec(cap[i + 1])[0]; // !!!!!!!!!!!
+                            b = this.rules.Bullet.Exec(cap[i + 1])[0]; // !!!!!!!!!!!
                             if (bull != b && !(bull.Length > 1 && b.Length > 1))
                             {
                                 src = String.Join("\n", cap.Skip(i + 1)) + src;
@@ -281,92 +281,92 @@ namespace MarkedNet
 
                         this.tokens.Add(new Token
                         {
-                            type = loose
+                            Type = loose
                               ? "loose_item_start"
                               : "list_item_start"
                         });
 
                         // Recurse.
-                        this.token(item, false);
+                        this.Token(item, false);
 
                         this.tokens.Add(new Token
                         {
-                            type = "list_item_end"
+                            Type = "list_item_end"
                         });
                     }
 
                     this.tokens.Add(new Token
                     {
-                        type = "list_end"
+                        Type = "list_end"
                     });
 
                     continue;
                 }
 
                 // html
-                if ((cap = this.rules.html.exec(src)).Any())
+                if ((cap = this.rules.Html.Exec(src)).Any())
                 {
                     src = src.Substring(cap[0].Length);
                     this.tokens.Add(new Token
                     {
-                        type = this.options.sanitize
+                        Type = this.options.Sanitize
                           ? "paragraph"
                           : "html",
-                        pre = (this.options.sanitizer == null)
+                        Pre = (this.options.Sanitizer == null)
                           && (cap[1] == "pre" || cap[1] == "script" || cap[1] == "style"),
-                        text = cap[0]
+                        Text = cap[0]
                     });
                     continue;
                 }
 
                 // def
-                if ((top) && (cap = this.rules.def.exec(src)).Any())
+                if ((top) && (cap = this.rules.Def.Exec(src)).Any())
                 {
                     src = src.Substring(cap[0].Length);
-                    this.tokens.links[cap[1].ToLower()] = new LinkObj
+                    this.tokens.Links[cap[1].ToLower()] = new LinkObj
                     {
-                        href = cap[2],
-                        title = cap[3]
+                        Href = cap[2],
+                        Title = cap[3]
                     };
                     continue;
                 }
 
                 // table (gfm)
-                if (top && (cap = this.rules.table.exec(src)).Any())
+                if (top && (cap = this.rules.Table.Exec(src)).Any())
                 {
                     src = src.Substring(cap[0].Length);
 
                     var item = new Token
                     {
-                        type = "table",
-                        header = cap[1].ReplaceRegex(@"^ *| *\| *$", "").SplitRegex(@" *\| *"),
-                        align = cap[2].ReplaceRegex(@"^ *|\| *$", "").SplitRegex(@" *\| *"),
-                        cells = cap[3].ReplaceRegex(@"(?: *\| *)?\n$", "").Split('\n').Select(x => new string[] { x }).ToArray()
+                        Type = "table",
+                        Header = cap[1].ReplaceRegex(@"^ *| *\| *$", "").SplitRegex(@" *\| *"),
+                        Align = cap[2].ReplaceRegex(@"^ *|\| *$", "").SplitRegex(@" *\| *"),
+                        Cells = cap[3].ReplaceRegex(@"(?: *\| *)?\n$", "").Split('\n').Select(x => new string[] { x }).ToArray()
                     };
 
-                    for (i = 0; i < item.align.Count; i++)
+                    for (i = 0; i < item.Align.Count; i++)
                     {
-                        if (Regex.IsMatch(item.align[i], @"^ *-+: *$"))
+                        if (Regex.IsMatch(item.Align[i], @"^ *-+: *$"))
                         {
-                            item.align[i] = "right";
+                            item.Align[i] = "right";
                         }
-                        else if (Regex.IsMatch(item.align[i], @"^ *:-+: *$"))
+                        else if (Regex.IsMatch(item.Align[i], @"^ *:-+: *$"))
                         {
-                            item.align[i] = "center";
+                            item.Align[i] = "center";
                         }
-                        else if (Regex.IsMatch(item.align[i], @"^ *:-+ *$"))
+                        else if (Regex.IsMatch(item.Align[i], @"^ *:-+ *$"))
                         {
-                            item.align[i] = "left";
+                            item.Align[i] = "left";
                         }
                         else
                         {
-                            item.align[i] = null;
+                            item.Align[i] = null;
                         }
                     }
 
-                    for (i = 0; i < item.cells.Count; i++)
+                    for (i = 0; i < item.Cells.Count; i++)
                     {
-                        item.cells[i] = item.cells[i][0]
+                        item.Cells[i] = item.Cells[i][0]
                           .ReplaceRegex(@"^ *\| *| *\| *$", "")
                           .SplitRegex(@" *\| *");
                     }
@@ -377,13 +377,13 @@ namespace MarkedNet
                 }
 
                 // top-level paragraph
-                if (top && (cap = this.rules.paragraph.exec(src)).Any())
+                if (top && (cap = this.rules.Paragraph.Exec(src)).Any())
                 {
                     src = src.Substring(cap[0].Length);
                     this.tokens.Add(new Token
                     {
-                        type = "paragraph",
-                        text = cap[1][cap[1].Length - 1] == '\n'
+                        Type = "paragraph",
+                        Text = cap[1][cap[1].Length - 1] == '\n'
                           ? cap[1].Substring(0, cap[1].Length - 1)
                           : cap[1]
                     });
@@ -391,14 +391,14 @@ namespace MarkedNet
                 }
 
                 // text
-                if ((cap = this.rules.text.exec(src)).Any())
+                if ((cap = this.rules.Text.Exec(src)).Any())
                 {
                     // Top-level should never reach here.
                     src = src.Substring(cap[0].Length);
                     this.tokens.Add(new Token
                     {
-                        type = "text",
-                        text = cap[0]
+                        Type = "text",
+                        Text = cap[0]
                     });
                     continue;
                 }

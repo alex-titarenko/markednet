@@ -8,12 +8,12 @@ namespace MarkedNet
 {
     public static class StringHelper
     {
-        public static string decodeURIComponent(string str)
+        public static string DecodeURIComponent(string str)
         {
             return Uri.UnescapeDataString(str);
         }
 
-        public static string escape(string html, bool encode = false)
+        public static string Escape(string html, bool encode = false)
         {
             return Regex.Replace(html, !encode ? @"&(?!#?\w+;)" : @"&", "&amp;")
                 .Replace("<", "&lt;")
@@ -22,7 +22,7 @@ namespace MarkedNet
                 .Replace("'", "&#39;");
         }
 
-        public static string unescape(string html)
+        public static string Unescape(string html)
         {
             return Regex.Replace(html, @"&([#\w]+);", (Match match) =>
             {
@@ -58,7 +58,7 @@ namespace MarkedNet
             return Regex.Split(input, pattern);
         }
 
-        public static IList<string> exec(this Regex regex, string src)
+        public static IList<string> Exec(this Regex regex, string src)
         {
             var match = regex.Match(src);
             if (!match.Success) return new string[0];
@@ -66,7 +66,7 @@ namespace MarkedNet
             return match.Groups.Cast<Group>().Select(x => x.Value).ToArray();
         }
 
-        public static string[] match(this string src, Regex regex)
+        public static string[] Match(this string src, Regex regex)
         {
             return regex.Matches(src).Cast<Match>().Select(x => x.Value).ToArray();
         }

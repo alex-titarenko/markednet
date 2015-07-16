@@ -12,22 +12,47 @@ namespace MarkedNet
     /// </summary>
     public class BlockRules
     {
-        public virtual Regex newline { get { return new Regex(@"^\n+"); } }
-        public virtual Regex code { get { return new Regex(@"^( {4}[^\n]+\n*)+"); } }
-        public virtual Regex fences { get { return new Regex(""); } } // noop
-        public virtual Regex hr { get { return new Regex(@"^( *[-*_]){3,} *(?:\n+|$)"); } }
-        public virtual Regex heading { get { return new Regex(@"^ *(#{1,6}) *([^\n]+?) *#* *(?:\n+|$)"); } }
-        public virtual Regex nptable { get { return new Regex(""); } } // noop
-        public virtual Regex lheading { get { return new Regex(@"^([^\n]+)\n *(=|-){2,} *(?:\n+|$)"); } }
-        public virtual Regex blockquote { get { return new Regex(@"^( *>[^\n]+(\n(?! *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +[""(]([^\n]+)["")])? *(?:\n+|$))[^\n]+)*\n*)+"); } }
-        public virtual Regex list { get { return new Regex(@"^( *)((?:[*+-]|\d+\.)) [\s\S]+?(?:\n+(?=\1?(?:[-*_] *){3,}(?:\n+|$))|\n+(?= *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +[""(]([^\n]+)["")])? *(?:\n+|$))|\n{2,}(?! )(?!\1(?:[*+-]|\d+\.) )\n*|\s*$)"); } }
-        public virtual Regex html { get { return new Regex(@"^ *(?:<!--[\s\S]*?-->|<((?!(?:a|em|strong|small|s|cite|q|dfn|abbr|data|time|code|var|samp|kbd|sub|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo|span|br|wbr|ins|del|img)\b)\w+(?!:\/|[^\w\s@]*@)\b)[\s\S]+?<\/\1>|<(?!(?:a|em|strong|small|s|cite|q|dfn|abbr|data|time|code|var|samp|kbd|sub|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo|span|br|wbr|ins|del|img)\b)\w+(?!:\/|[^\w\s@]*@)\b(?:""[^""]*""|'[^']*'|[^'"">])*?>) *(?:\n{2,}|\s*$)"); } }
-        public virtual Regex def { get { return new Regex(@"^ *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +[""(]([^\n]+)["")])? *(?:\n+|$)"); } }
-        public virtual Regex table { get { return new Regex(""); } } // noop
-        public virtual Regex paragraph { get { return new Regex(@"^((?:[^\n]+\n?(?!( *[-*_]){3,} *(?:\n+|$)| *(#{1,6}) *([^\n]+?) *#* *(?:\n+|$)|([^\n]+)\n *(=|-){2,} *(?:\n+|$)|( *>[^\n]+(\n(?! *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +[""(]([^\n]+)["")])? *(?:\n+|$))[^\n]+)*\n*)+|<(?!(?:a|em|strong|small|s|cite|q|dfn|abbr|data|time|code|var|samp|kbd|sub|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo|span|br|wbr|ins|del|img)\b)\w+(?!:\/|[^\w\s@]*@)\b| *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +[""(]([^\n]+)["")])? *(?:\n+|$)))+)\n*"); } }
-        public virtual Regex text { get { return new Regex(@"^[^\n]+"); } }
-        public virtual Regex bullet { get { return new Regex(@"(?:[*+-]|\d+\.)"); } }
-        public virtual Regex item { get { return new Regex(@"^( *)((?:[*+-]|\d+\.)) [^\n]*(?:\n(?!\1(?:[*+-]|\d+\.) )[^\n]*)*", RegexOptions.Multiline); } }
+        #region Fields
+
+        private static readonly Regex newline = new Regex(@"^\n+");
+        private static readonly Regex code = new Regex(@"^( {4}[^\n]+\n*)+");
+        private static readonly Regex fences = new Regex(""); // noop
+        private static readonly Regex hr = new Regex(@"^( *[-*_]){3,} *(?:\n+|$)");
+        private static readonly Regex heading = new Regex(@"^ *(#{1,6}) *([^\n]+?) *#* *(?:\n+|$)");
+        private static readonly Regex npTable = new Regex(""); // noop
+        private static readonly Regex lHeading = new Regex(@"^([^\n]+)\n *(=|-){2,} *(?:\n+|$)");
+        private static readonly Regex blockquote = new Regex(@"^( *>[^\n]+(\n(?! *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +[""(]([^\n]+)["")])? *(?:\n+|$))[^\n]+)*\n*)+");
+        private static readonly Regex list = new Regex(@"^( *)((?:[*+-]|\d+\.)) [\s\S]+?(?:\n+(?=\1?(?:[-*_] *){3,}(?:\n+|$))|\n+(?= *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +[""(]([^\n]+)["")])? *(?:\n+|$))|\n{2,}(?! )(?!\1(?:[*+-]|\d+\.) )\n*|\s*$)");
+        private static readonly Regex html = new Regex(@"^ *(?:<!--[\s\S]*?-->|<((?!(?:a|em|strong|small|s|cite|q|dfn|abbr|data|time|code|var|samp|kbd|sub|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo|span|br|wbr|ins|del|img)\b)\w+(?!:\/|[^\w\s@]*@)\b)[\s\S]+?<\/\1>|<(?!(?:a|em|strong|small|s|cite|q|dfn|abbr|data|time|code|var|samp|kbd|sub|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo|span|br|wbr|ins|del|img)\b)\w+(?!:\/|[^\w\s@]*@)\b(?:""[^""]*""|'[^']*'|[^'"">])*?>) *(?:\n{2,}|\s*$)");
+        private static readonly Regex def = new Regex(@"^ *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +[""(]([^\n]+)["")])? *(?:\n+|$)");
+        private static readonly Regex table = new Regex(""); // noop
+        private static readonly Regex paragraph = new Regex(@"^((?:[^\n]+\n?(?!( *[-*_]){3,} *(?:\n+|$)| *(#{1,6}) *([^\n]+?) *#* *(?:\n+|$)|([^\n]+)\n *(=|-){2,} *(?:\n+|$)|( *>[^\n]+(\n(?! *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +[""(]([^\n]+)["")])? *(?:\n+|$))[^\n]+)*\n*)+|<(?!(?:a|em|strong|small|s|cite|q|dfn|abbr|data|time|code|var|samp|kbd|sub|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo|span|br|wbr|ins|del|img)\b)\w+(?!:\/|[^\w\s@]*@)\b| *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +[""(]([^\n]+)["")])? *(?:\n+|$)))+)\n*");
+        private static readonly Regex text = new Regex(@"^[^\n]+");
+        private static readonly Regex bullet = new Regex(@"(?:[*+-]|\d+\.)");
+        private static readonly Regex item = new Regex(@"^( *)((?:[*+-]|\d+\.)) [^\n]*(?:\n(?!\1(?:[*+-]|\d+\.) )[^\n]*)*", RegexOptions.Multiline);
+
+        #endregion
+
+        #region Properties
+
+        public virtual Regex Newline { get { return newline; } }
+        public virtual Regex Сode { get { return code; } }
+        public virtual Regex Fences { get { return fences; } } // noop
+        public virtual Regex Hr { get { return hr; } }
+        public virtual Regex Heading { get { return heading; } }
+        public virtual Regex NpTable { get { return npTable; } } // noop
+        public virtual Regex LHeading { get { return lHeading; } }
+        public virtual Regex Blockquote { get { return blockquote; } }
+        public virtual Regex List { get { return list; } }
+        public virtual Regex Html { get { return html; } }
+        public virtual Regex Def { get { return def; } }
+        public virtual Regex Table { get { return table; } } // noop
+        public virtual Regex Paragraph { get { return paragraph; } }
+        public virtual Regex Text { get { return text; } }
+        public virtual Regex Bullet { get { return bullet; } }
+        public virtual Regex Item { get { return item; } }
+
+        #endregion
     }
 
     /// <summary>
@@ -42,9 +67,21 @@ namespace MarkedNet
     /// </summary>
     public class GfmBlockRules : BlockRules
     {
-        public override Regex fences { get { return new Regex(@"^ *(`{3,}|~{3,}) *(\S+)? *\n([\s\S]+?)\s*\1 *(?:\n+|$)"); } }
-        public override Regex paragraph { get { return new Regex(@"^((?:[^\n]+\n?(?! *(`{3,}|~{3,}) *(\S+)? *\n([\s\S]+?)\s*\2 *(?:\n+|$)|( *)((?:[*+-]|\d+\.)) [\s\S]+?(?:\n+(?=\3?(?:[-*_] *){3,}(?:\n+|$))|\n+(?= *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +[""(]([^\n]+)["")])? *(?:\n+|$))|\n{2,}(?! )(?!\1(?:[*+-]|\d+\.) )\n*|\s*$)|( *[-*_]){3,} *(?:\n+|$)| *(#{1,6}) *([^\n]+?) *#* *(?:\n+|$)|([^\n]+)\n *(=|-){2,} *(?:\n+|$)|( *>[^\n]+(\n(?! *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +[""(]([^\n]+)["")])? *(?:\n+|$))[^\n]+)*\n*)+|<(?!(?:a|em|strong|small|s|cite|q|dfn|abbr|data|time|code|var|samp|kbd|sub|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo|span|br|wbr|ins|del|img)\b)\w+(?!:\/|[^\w\s@]*@)\b| *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +[""(]([^\n]+)["")])? *(?:\n+|$)))+)\n*"); } }
-        public override Regex heading { get { return new Regex(@"^ *(#{1,6}) *([^\n]+?) *#* *(?:\n+|$)"); } }
+        #region Fields
+
+        private static readonly Regex fences = new Regex(@"^ *(`{3,}|~{3,}) *(\S+)? *\n([\s\S]+?)\s*\1 *(?:\n+|$)");
+        private static readonly Regex paragraph = new Regex(@"^((?:[^\n]+\n?(?! *(`{3,}|~{3,}) *(\S+)? *\n([\s\S]+?)\s*\2 *(?:\n+|$)|( *)((?:[*+-]|\d+\.)) [\s\S]+?(?:\n+(?=\3?(?:[-*_] *){3,}(?:\n+|$))|\n+(?= *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +[""(]([^\n]+)["")])? *(?:\n+|$))|\n{2,}(?! )(?!\1(?:[*+-]|\d+\.) )\n*|\s*$)|( *[-*_]){3,} *(?:\n+|$)| *(#{1,6}) *([^\n]+?) *#* *(?:\n+|$)|([^\n]+)\n *(=|-){2,} *(?:\n+|$)|( *>[^\n]+(\n(?! *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +[""(]([^\n]+)["")])? *(?:\n+|$))[^\n]+)*\n*)+|<(?!(?:a|em|strong|small|s|cite|q|dfn|abbr|data|time|code|var|samp|kbd|sub|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo|span|br|wbr|ins|del|img)\b)\w+(?!:\/|[^\w\s@]*@)\b| *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +[""(]([^\n]+)["")])? *(?:\n+|$)))+)\n*");
+        private static readonly Regex heading = new Regex(@"^ *(#{1,6}) *([^\n]+?) *#* *(?:\n+|$)");
+
+        #endregion
+
+        #region Properties
+
+        public override Regex Fences { get { return fences; } }
+        public override Regex Paragraph { get { return paragraph; } }
+        public override Regex Heading { get { return heading; } }
+
+        #endregion
     }
 
     /// <summary>
@@ -52,7 +89,18 @@ namespace MarkedNet
     /// </summary>
     public class TablesBlockRules : GfmBlockRules
     {
-        public override Regex nptable { get { return new Regex(@"^ *(\S.*\|.*)\n *([-:]+ *\|[-| :]*)\n((?:.*\|.*(?:\n|$))*)\n*"); } }
-        public override Regex table { get { return new Regex(@"^ *\|(.+)\n *\|( *[-:]+[-| :]*)\n((?: *\|.*(?:\n|$))*)\n*"); } }
+        #region Fields
+
+        private static readonly Regex npTable = new Regex(@"^ *(\S.*\|.*)\n *([-:]+ *\|[-| :]*)\n((?:.*\|.*(?:\n|$))*)\n*");
+        private static readonly Regex table = new Regex(@"^ *\|(.+)\n *\|( *[-:]+[-| :]*)\n((?: *\|.*(?:\n|$))*)\n*");
+
+        #endregion
+
+        #region Properties
+
+        public override Regex NpTable { get { return npTable; } }
+        public override Regex Table { get { return table; } }
+
+        #endregion
     }
 }

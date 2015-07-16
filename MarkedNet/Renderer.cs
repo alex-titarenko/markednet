@@ -33,11 +33,11 @@ namespace MarkedNet
 
         #region Block Level Renderer
 
-        public virtual string code(string code, string lang, bool escaped)
+        public virtual string Code(string code, string lang, bool escaped)
         {
-            if (this.options.highlight != null)
+            if (this.options.Highlight != null)
             {
-                var @out = this.options.highlight(code, lang);
+                var @out = this.options.Highlight(code, lang);
                 if (@out != null && @out != code)
                 {
                     escaped = true;
@@ -47,33 +47,33 @@ namespace MarkedNet
 
             if (String.IsNullOrEmpty(lang))
             {
-                return "<pre><code>" + (escaped ? code : StringHelper.escape(code, true)) + "\n</code></pre>";
+                return "<pre><code>" + (escaped ? code : StringHelper.Escape(code, true)) + "\n</code></pre>";
             }
 
             return "<pre><code class=\""
-                + this.options.langPrefix
-                + StringHelper.escape(lang, true)
+                + this.options.LangPrefix
+                + StringHelper.Escape(lang, true)
                 + "\">"
-                + (escaped ? code : StringHelper.escape(code, true))
+                + (escaped ? code : StringHelper.Escape(code, true))
                 + "\n</code></pre>\n";
         }
 
-        public virtual string blockquote(string quote)
+        public virtual string Blockquote(string quote)
         {
             return "<blockquote>\n" + quote + "</blockquote>\n";
         }
 
-        public virtual string html(string html)
+        public virtual string Html(string html)
         {
             return html;
         }
 
-        public virtual string heading(string text, int level, string raw)
+        public virtual string Heading(string text, int level, string raw)
         {
             return "<h"
                 + level
                 + " id=\""
-                + this.options.headerPrefix
+                + this.options.HeaderPrefix
                 + Regex.Replace(raw.ToLower(), @"[^\w]+", "-")
                 + "\">"
                 + text
@@ -82,28 +82,28 @@ namespace MarkedNet
                 + ">\n";
         }
 
-        public virtual string hr()
+        public virtual string Hr()
         {
-            return this.options.xhtml ? "<hr/>\n" : "<hr>\n";
+            return this.options.XHtml ? "<hr/>\n" : "<hr>\n";
         }
 
-        public virtual string list(string body, bool ordered)
+        public virtual string List(string body, bool ordered)
         {
             var type = ordered ? "ol" : "ul";
             return "<" + type + ">\n" + body + "</" + type + ">\n";
         }
 
-        public virtual string listitem(string text)
+        public virtual string ListItem(string text)
         {
             return "<li>" + text + "</li>\n";
         }
 
-        public virtual string paragraph(string text)
+        public virtual string Paragraph(string text)
         {
             return "<p>" + text + "</p>\n";
         }
 
-        public virtual string table(string header, string body)
+        public virtual string Table(string header, string body)
         {
             return "<table>\n"
                 + "<thead>\n"
@@ -115,16 +115,16 @@ namespace MarkedNet
                 + "</table>\n";
         }
 
-        public virtual string tablerow(string content)
+        public virtual string TableRow(string content)
         {
             return "<tr>\n" + content + "</tr>\n";
         }
 
-        public virtual string tablecell(string content, TableCellFlags flags)
+        public virtual string TableCell(string content, TableCellFlags flags)
         {
-            var type = flags.header ? "th" : "td";
-            var tag = !String.IsNullOrEmpty(flags.align)
-                ? "<" + type + " style=\"text-align:" + flags.align + "\">"
+            var type = flags.Header ? "th" : "td";
+            var tag = !String.IsNullOrEmpty(flags.Align)
+                ? "<" + type + " style=\"text-align:" + flags.Align + "\">"
                 : "<" + type + ">";
 
             return tag + content + "</" + type + ">\n";
@@ -134,40 +134,40 @@ namespace MarkedNet
 
         #region Span Level Renderer
 
-        public virtual string strong(string text)
+        public virtual string Strong(string text)
         {
             return "<strong>" + text + "</strong>";
         }
 
-        public virtual string em(string text)
+        public virtual string Em(string text)
         {
             return "<em>" + text + "</em>";
         }
 
-        public virtual string codespan(string text)
+        public virtual string Codespan(string text)
         {
             return "<code>" + text + "</code>";
         }
 
-        public virtual string br()
+        public virtual string Br()
         {
-            return this.options.xhtml ? "<br/>" : "<br>";
+            return this.options.XHtml ? "<br/>" : "<br>";
         }
 
-        public virtual string del(string text)
+        public virtual string Del(string text)
         {
             return "<del>" + text + "</del>";
         }
 
-        public virtual string link(string href, string title, string text)
+        public virtual string Link(string href, string title, string text)
         {
-            if (this.options.sanitize)
+            if (this.options.Sanitize)
             {
                 string prot = null;
                 
                 try
                 {
-                    prot = Regex.Replace(StringHelper.decodeURIComponent(StringHelper.unescape(href)), @"[^\w:]", String.Empty).ToLower();
+                    prot = Regex.Replace(StringHelper.DecodeURIComponent(StringHelper.Unescape(href)), @"[^\w:]", String.Empty).ToLower();
                 }
                 catch (Exception)
                 {
@@ -190,7 +190,7 @@ namespace MarkedNet
             return @out;
         }
 
-        public virtual string image(string href, string title, string text)
+        public virtual string Image(string href, string title, string text)
         {
             var @out = "<img src=\"" + href + "\" alt=\"" + text + "\"";
             if (!String.IsNullOrEmpty(title))
@@ -198,11 +198,11 @@ namespace MarkedNet
                 @out += " title=\"" + title + "\"";
             }
 
-            @out += this.options.xhtml ? "/>" : ">";
+            @out += this.options.XHtml ? "/>" : ">";
             return @out;
         }
 
-        public virtual string text(string text)
+        public virtual string Text(string text)
         {
           return text;
         }

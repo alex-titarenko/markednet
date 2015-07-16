@@ -7,25 +7,25 @@ namespace MarkedNet
 {
     public class TokensResult
     {
-        public IList<Token> tokens { get; set; }
-        public IDictionary<string, LinkObj> links { get; set; }
-        public int Length { get { return tokens.Count; } }
+        public IList<Token> Tokens { get; set; }
+        public IDictionary<string, LinkObj> Links { get; set; }
+        public int Length { get { return Tokens.Count; } }
 
         public IEnumerable<Token> Reverse()
         {
-            return tokens.Reverse();
+            return Tokens.Reverse();
         }
 
         public TokensResult()
         {
-            tokens = new List<Token>();
-            links = new Dictionary<string, LinkObj>();
+            Tokens = new List<Token>();
+            Links = new Dictionary<string, LinkObj>();
         }
 
 
         public void Add(Token token)
         {
-            tokens.Add(token);
+            Tokens.Add(token);
         }
     }
 }
