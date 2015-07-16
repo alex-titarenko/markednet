@@ -21,6 +21,6 @@ namespace MarkedNet
 
         public IList<string> header { get; set; }
         public IList<string> align { get; set; }
-        public IList<string> cells { get; set; }
+        public IList<IList<string>> cells { get; set; }
     }
 }

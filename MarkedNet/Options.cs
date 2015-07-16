@@ -33,6 +33,8 @@ namespace MarkedNet
 
         public bool tables { get; set; }
 
+        public bool smartLists { get; set; }
+
 
         public Options()
         {
@@ -50,6 +52,7 @@ namespace MarkedNet
             breaks = false;
             gfm = true;
             tables = true;
+            smartLists = false;
         }
     }
 }

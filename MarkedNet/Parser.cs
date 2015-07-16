@@ -128,10 +128,10 @@ namespace MarkedNet
                             var row = this.token.cells[i];
 
                             cell = String.Empty;
-                            for (int j = 0; j < row.Length; j++)
+                            for (int j = 0; j < row.Count; j++)
                             {
                                 cell += this.renderer.tablecell(
-                                  this.inline.output(row[j] + ""), // !!!!!!!!!!!!
+                                  this.inline.output(row[j]), // !!!!!!!!!!!!
                                   new TableCellFlags { header = false, align = this.token.align[j] }
                                 );
                             }

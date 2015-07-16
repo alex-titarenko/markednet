@@ -53,9 +53,22 @@ namespace MarkedNet
             return Regex.Replace(input, pattern, replacement);
         }
 
+        public static IList<string> SplitRegex(this string input, string pattern)
+        {
+            return Regex.Split(input, pattern);
+        }
+
         public static IList<string> exec(this Regex regex, string src)
         {
-            throw new NotImplementedException();
+            var match = regex.Match(src);
+            if (!match.Success) return new string[0];
+
+            return match.Groups.Cast<Group>().Select(x => x.Value).ToArray();
+        }
+
+        public static string[] match(this string src, Regex regex)
+        {
+            return regex.Matches(src).Cast<Match>().Select(x => x.Value).ToArray();
         }
     }
 }
