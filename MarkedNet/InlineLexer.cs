@@ -156,7 +156,9 @@ namespace MarkedNet
                 {
                     src = src.Substring(cap[0].Length);
                     var linkStr = (StringHelper.NotEmpty(cap, 2, 1)).ReplaceRegex(@"\s+", " ");
-                    link = this.links[linkStr.ToLower()];
+                    
+                    this.links.TryGetValue(linkStr.ToLower(), out link);
+                    
                     if (link == null || String.IsNullOrEmpty(link.href))
                     {
                         @out += cap[0][0];

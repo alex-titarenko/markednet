@@ -24,10 +24,12 @@ namespace MarkedNet
 
         public string Parse(string src)
         {
-            var highlight = Options.highlight;
+            if (String.IsNullOrEmpty(src))
+            {
+                return src;
+            }
+
             TokensResult tokens;
-            int pending;
-            var i = 0;
 
             try
             {
@@ -38,10 +40,7 @@ namespace MarkedNet
               throw;
             }
 
-            pending = tokens.Length;
-
             string @out = Parser.parse(tokens, Options);
-
             return @out;
 
 

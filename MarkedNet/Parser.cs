@@ -118,7 +118,7 @@ namespace MarkedNet
                         {
                             cell += this.renderer.tablecell(
                               this.inline.output(this.token.header[i]),
-                              new TableCellFlags { header = true, align = this.token.align[i] }
+                              new TableCellFlags { header = true, align = i < this.token.align.Count ? this.token.align[i] : null }
                             );
                         }
                         header += this.renderer.tablerow(cell);
@@ -131,8 +131,8 @@ namespace MarkedNet
                             for (int j = 0; j < row.Count; j++)
                             {
                                 cell += this.renderer.tablecell(
-                                  this.inline.output(row[j]), // !!!!!!!!!!!!
-                                  new TableCellFlags { header = false, align = this.token.align[j] }
+                                  this.inline.output(row[j]),
+                                  new TableCellFlags { header = false, align = j < this.token.align.Count ? this.token.align[j] : null }
                                 );
                             }
 
