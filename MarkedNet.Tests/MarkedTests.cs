@@ -78,5 +78,51 @@ namespace MarkedNet.Tests
             Assert.AreEqual(expected, actual);
 
         }
+
+        [Test]
+        public void Parse_ComplexMarkdownText_HtmlText()
+        {
+            // arrange
+            var markdown = @"
+Heading
+=======
+ 
+Sub-heading
+-----------
+  
+### Another deeper heading
+  
+Paragraphs are separated
+by a blank line.
+ 
+Leave 2 spaces at the end of a line to do a  
+line break
+ 
+Text attributes *italic*, **bold**, 
+`monospace`, ~~strikethrough~~ .
+ 
+A [link](http://example.com).
+
+Shopping list:
+ 
+* apples
+* oranges
+* pears
+ 
+Numbered list:
+ 
+1. apples
+2. oranges
+3. pears
+";
+            
+            var expected = "<h1 id=\"heading\">Heading</h1>\n<h2 id=\"sub-heading\">Sub-heading</h2>\n<h3 id=\"another-deeper-heading\">Another deeper heading</h3>\n<p>Paragraphs are separated\nby a blank line.</p>\n<p>Leave 2 spaces at the end of a line to do a<br>line break</p>\n<p>Text attributes <em>italic</em>, <strong>bold</strong>, \n<code>monospace</code>, <del>strikethrough</del> .</p>\n<p>A <a href=\"http://example.com\">link</a>.</p>\n<p>Shopping list:</p>\n<ul>\n<li>apples</li>\n<li>oranges</li>\n<li>pears</li>\n</ul>\n<p>Numbered list:</p>\n<ol>\n<li>apples</li>\n<li>oranges</li>\n<li>pears</li>\n</ol>\n";
+
+            //action
+            var html = _marked.Parse(markdown);
+
+            //assert
+            Assert.AreEqual(expected, html);
+        }
     }
 }
