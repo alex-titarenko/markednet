@@ -7,11 +7,23 @@ namespace MarkedNet
 {
     public class Options
     {
+        #region Fields
+
+        private Renderer _renderer;
+
+        #endregion
+
+        #region Properties
+
         public Func<string, string, string> Highlight { get; set; }
 
         public Func<string, string> Sanitizer { get; set; }
 
-        public Renderer Renderer { get; set; }
+        public Renderer Renderer
+        {
+            get { return _renderer; }
+            set { _renderer = value; if (_renderer != null) _renderer.Options = this; }
+        }
 
         public string LangPrefix { get; set; }
 
@@ -35,6 +47,9 @@ namespace MarkedNet
 
         public bool SmartLists { get; set; }
 
+        #endregion
+
+        #region Constructors
 
         public Options()
         {
@@ -54,5 +69,7 @@ namespace MarkedNet
             Tables = true;
             SmartLists = false;
         }
+
+        #endregion
     }
 }

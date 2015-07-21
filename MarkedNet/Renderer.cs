@@ -9,9 +9,9 @@ namespace MarkedNet
 {
     public class Renderer
     {
-        #region Fields
+        #region Properties
 
-        private Options _options;
+        public Options Options { get; set; }
 
         #endregion
 
@@ -24,7 +24,7 @@ namespace MarkedNet
 
         public Renderer(Options options)
         {
-            _options = options ?? new Options();
+            Options = options ?? new Options();
         }
 
         #endregion
@@ -35,9 +35,9 @@ namespace MarkedNet
 
         public virtual string Code(string code, string lang, bool escaped)
         {
-            if (_options.Highlight != null)
+            if (Options.Highlight != null)
             {
-                var @out = _options.Highlight(code, lang);
+                var @out = Options.Highlight(code, lang);
                 if (@out != null && @out != code)
                 {
                     escaped = true;
@@ -51,7 +51,7 @@ namespace MarkedNet
             }
 
             return "<pre><code class=\""
-                + _options.LangPrefix
+                + Options.LangPrefix
                 + StringHelper.Escape(lang, true)
                 + "\">"
                 + (escaped ? code : StringHelper.Escape(code, true))
@@ -73,7 +73,7 @@ namespace MarkedNet
             return "<h"
                 + level
                 + " id=\""
-                + _options.HeaderPrefix
+                + Options.HeaderPrefix
                 + Regex.Replace(raw.ToLower(), @"[^\w]+", "-")
                 + "\">"
                 + text
@@ -84,7 +84,7 @@ namespace MarkedNet
 
         public virtual string Hr()
         {
-            return _options.XHtml ? "<hr/>\n" : "<hr>\n";
+            return Options.XHtml ? "<hr/>\n" : "<hr>\n";
         }
 
         public virtual string List(string body, bool ordered)
@@ -151,7 +151,7 @@ namespace MarkedNet
 
         public virtual string Br()
         {
-            return _options.XHtml ? "<br/>" : "<br>";
+            return Options.XHtml ? "<br/>" : "<br>";
         }
 
         public virtual string Del(string text)
@@ -161,7 +161,7 @@ namespace MarkedNet
 
         public virtual string Link(string href, string title, string text)
         {
-            if (_options.Sanitize)
+            if (Options.Sanitize)
             {
                 string prot = null;
                 
@@ -198,7 +198,7 @@ namespace MarkedNet
                 @out += " title=\"" + title + "\"";
             }
 
-            @out += _options.XHtml ? "/>" : ">";
+            @out += Options.XHtml ? "/>" : ">";
             return @out;
         }
 
