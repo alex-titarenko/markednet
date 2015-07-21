@@ -37,7 +37,7 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BlockLexer.cs" />
+    <Compile Include="Lexer.cs" />
     <Compile Include="BlockRules.cs" />
     <Compile Include="InlineLexer.cs" />
     <Compile Include="InlineRules.cs" />

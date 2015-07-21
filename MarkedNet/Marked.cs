@@ -22,15 +22,15 @@ namespace MarkedNet
         }
 
 
-        public string Parse(string src)
+        public virtual string Parse(string src)
         {
             if (String.IsNullOrEmpty(src))
             {
                 return src;
             }
 
-            var tokens = BlockLexer.Lex(src, Options);
-            var result = Parser.parse(tokens, Options);
+            var tokens = Lexer.Lex(src, Options);
+            var result = Parser.Parse(tokens, Options);
             return result;
         }
     }

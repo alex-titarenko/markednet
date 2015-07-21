@@ -8,8 +8,7 @@ namespace MarkedNet
 {
     public class Parser
     {
-        private Options options; 
-        private Renderer renderer;
+        private Options _options; 
         private InlineLexer inline;
         private Stack<Token> tokens;
         private Token token;
@@ -19,33 +18,31 @@ namespace MarkedNet
         {
             this.tokens = new Stack<Token>();
             this.token = null;
-            this.options = options ?? new Options();
-            this.options.Renderer = this.options.Renderer ?? new Renderer(options);
-            this.renderer = this.options.Renderer;
+            _options = options ?? new Options();
         }
 
 
         /// <summary>
         /// Static Parse Method
         /// </summary>
-        public static string parse(TokensResult src, Options options)
+        public static string Parse(TokensResult src, Options options)
         {
             var parser = new Parser(options);
-            return parser.parse(src);
+            return parser.Parse(src);
         }
 
         /// <summary>
         /// Parse Loop
         /// </summary>
-        public virtual string parse(TokensResult src)
+        public virtual string Parse(TokensResult src)
         {
-            this.inline = new InlineLexer(src.Links, this.options);
+            this.inline = new InlineLexer(src.Links, this._options);
             this.tokens = new Stack<Token>(src.Reverse());
 
             var @out = String.Empty;
-            while (this.next() != null)
+            while (Next() != null)
             {
-                @out += this.tok();
+                @out += Tok();
             }
 
             return @out;
@@ -55,7 +52,7 @@ namespace MarkedNet
         /// <summary>
         /// Next Token
         /// </summary>
-        protected virtual Token next()
+        protected virtual Token Next()
         {
             return this.token = (this.tokens.Any()) ? this.tokens.Pop() : null;
         }
@@ -64,7 +61,7 @@ namespace MarkedNet
         /// <summary>
         /// Preview Next Token
         /// </summary>
-        protected virtual Token peek()
+        protected virtual Token Peek()
         {
             return this.tokens.Peek() ?? new Token();
         }
@@ -73,13 +70,13 @@ namespace MarkedNet
         /// <summary>
         /// Parse Text Tokens
         /// </summary>    
-        protected virtual string parseText()
+        protected virtual string ParseText()
         {
             var body = this.token.Text;
 
-            while (this.peek().Type == "text")
+            while (this.Peek().Type == "text")
             {
-                body += '\n' + this.next().Text;
+                body += '\n' + this.Next().Text;
             }
 
             return this.inline.Output(body);
@@ -88,7 +85,7 @@ namespace MarkedNet
         /// <summary>
         /// Parse Current Token
         /// </summary>    
-        protected virtual string tok()
+        protected virtual string Tok()
         {
             switch (this.token.Type)
             {
@@ -98,15 +95,15 @@ namespace MarkedNet
                     }
                 case "hr":
                     {
-                        return this.renderer.Hr();
+                        return _options.Renderer.Hr();
                     }
                 case "heading":
                     {
-                        return this.renderer.Heading(this.inline.Output(this.token.Text), this.token.Depth, this.token.Text);
+                        return _options.Renderer.Heading(this.inline.Output(this.token.Text), this.token.Depth, this.token.Text);
                     }
                 case "code":
                     {
-                        return this.renderer.Code(this.token.Text, this.token.Lang, this.token.Escaped);
+                        return _options.Renderer.Code(this.token.Text, this.token.Lang, this.token.Escaped);
                     }
                 case "table":
                     {
@@ -116,12 +113,12 @@ namespace MarkedNet
                         var cell = String.Empty;
                         for (int i = 0; i < this.token.Header.Count; i++)
                         {
-                            cell += this.renderer.TableCell(
+                            cell += _options.Renderer.TableCell(
                               this.inline.Output(this.token.Header[i]),
                               new TableCellFlags { Header = true, Align = i < this.token.Align.Count ? this.token.Align[i] : null }
                             );
                         }
-                        header += this.renderer.TableRow(cell);
+                        header += _options.Renderer.TableRow(cell);
 
                         for (int i = 0; i < this.token.Cells.Count; i++)
                         {
@@ -130,77 +127,77 @@ namespace MarkedNet
                             cell = String.Empty;
                             for (int j = 0; j < row.Count; j++)
                             {
-                                cell += this.renderer.TableCell(
+                                cell += _options.Renderer.TableCell(
                                   this.inline.Output(row[j]),
                                   new TableCellFlags { Header = false, Align = j < this.token.Align.Count ? this.token.Align[j] : null }
                                 );
                             }
 
-                            body += this.renderer.TableRow(cell);
+                            body += _options.Renderer.TableRow(cell);
                         }
-                        return this.renderer.Table(header, body);
+                        return _options.Renderer.Table(header, body);
                     }
                 case "blockquote_start":
                     {
                         var body = String.Empty;
 
-                        while (this.next().Type != "blockquote_end")
+                        while (this.Next().Type != "blockquote_end")
                         {
-                            body += this.tok();
+                            body += this.Tok();
                         }
 
-                        return this.renderer.Blockquote(body);
+                        return _options.Renderer.Blockquote(body);
                     }
                 case "list_start":
                     {
                         var body = String.Empty;
                         var ordered = this.token.Ordered;
 
-                        while (this.next().Type != "list_end")
+                        while (this.Next().Type != "list_end")
                         {
-                            body += this.tok();
+                            body += this.Tok();
                         }
 
-                        return this.renderer.List(body, ordered);
+                        return _options.Renderer.List(body, ordered);
                     }
                 case "list_item_start":
                     {
                         var body = String.Empty;
 
-                        while (this.next().Type != "list_item_end")
+                        while (this.Next().Type != "list_item_end")
                         {
                             body += this.token.Type == "text"
-                              ? this.parseText()
-                              : this.tok();
+                              ? this.ParseText()
+                              : this.Tok();
                         }
 
-                        return this.renderer.ListItem(body);
+                        return _options.Renderer.ListItem(body);
                     }
                 case "loose_item_start":
                     {
                         var body = String.Empty;
 
-                        while (this.next().Type != "list_item_end")
+                        while (this.Next().Type != "list_item_end")
                         {
-                            body += this.tok();
+                            body += this.Tok();
                         }
 
-                        return this.renderer.ListItem(body);
+                        return _options.Renderer.ListItem(body);
                     }
                 case "html":
                     {
-                        var html = !this.token.Pre && !this.options.Pedantic
+                        var html = !this.token.Pre && !this._options.Pedantic
                           ? this.inline.Output(this.token.Text)
                           : this.token.Text;
-                        return this.renderer.Html(html);
+                        return _options.Renderer.Html(html);
                     }
                 case "paragraph":
                     {
-                        return this.renderer.Paragraph(this.inline.Output(this.token.Text));
+                        return _options.Renderer.Paragraph(this.inline.Output(this.token.Text));
                     }
                 case "text":
                     {
-                        return this.renderer.Paragraph(this.parseText());
+                        return _options.Renderer.Paragraph(this.ParseText());
                     }
             }
 
