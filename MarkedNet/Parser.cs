@@ -152,13 +152,13 @@ namespace MarkedNet
                     {
                         var body = String.Empty;
                         var ordered = this.token.Ordered;
-
+                        var start = this.token.Start;
                         while (this.Next().Type != "list_end")
                         {
                             body += this.Tok();
                         }
 
-                        return _options.Renderer.List(body, ordered);
+                        return _options.Renderer.List(body, ordered, start);
                     }
                 case "list_item_start":
                     {

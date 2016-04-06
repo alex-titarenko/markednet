@@ -17,6 +17,8 @@ namespace MarkedNet
         public string Lang { get; set; }
         public bool Ordered { get; set; }
 
+        public int Start { get; set; }
+
         public bool Pre { get; set; }
 
         public IList<string> Header { get; set; }

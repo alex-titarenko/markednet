@@ -87,9 +87,11 @@ namespace MarkedNet
             return Options.XHtml ? "<hr/>\n" : "<hr>\n";
         }
 
-        public virtual string List(string body, bool ordered)
+        public virtual string List(string body, bool ordered, int start)
         {
             var type = ordered ? "ol" : "ul";
+            if (ordered && start != 1)
+                return $"<ol start=\"{start}\">\n{body}\n</ol>\n";
             return "<" + type + ">\n" + body + "</" + type + ">\n";
         }
 
@@ -205,6 +207,26 @@ namespace MarkedNet
         public virtual string Text(string text)
         {
           return text;
+        }
+
+        /// <summary>
+        /// Preprocess entire input before parsing
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public virtual string Preprocess(string text)
+        {
+            return text;
+        }
+
+        /// <summary>
+        /// ppostprocess entire output before returning
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public virtual string Postprocess(string text)
+        {
+            return text;
         }
     
         #endregion

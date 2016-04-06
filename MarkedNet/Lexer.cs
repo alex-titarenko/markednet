@@ -217,11 +217,15 @@ namespace MarkedNet
                 {
                     src = src.Substring(cap[0].Length);
                     var bull = cap[2];
+                    int start = 1;
+                    if (!int.TryParse(bull.TrimEnd('.').Trim(), out start))
+                        start = 1;
 
                     tokens.Add(new Token
                     {
                         Type = "list_start",
-                        Ordered = bull.Length > 1
+                        Ordered = bull.Length > 1,
+                        Start = start
                     });
 
                     // Get each top-level item.

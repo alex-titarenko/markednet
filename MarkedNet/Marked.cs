@@ -29,9 +29,10 @@ namespace MarkedNet
                 return src;
             }
 
+            src = Options.Renderer.Preprocess(src);
             var tokens = Lexer.Lex(src, Options);
             var result = Parser.Parse(tokens, Options);
-            return result;
+            return Options.Renderer.Postprocess(result);
         }
     }
 }
