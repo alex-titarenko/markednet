@@ -62,7 +62,7 @@ namespace MarkedNet
             XHtml = false;
             Sanitize = false;
             Pedantic = false;
-            Mangle = false;
+            Mangle = true;
             Smartypants = false;
             Breaks = false;
             Gfm = true;
