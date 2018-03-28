@@ -22,6 +22,12 @@ namespace MarkedNet
         }
 
 
+        public static string Parse(string src, Options options)
+        {
+            var marked = new Marked(options);
+            return marked.Parse(src);
+        }
+
         public virtual string Parse(string src)
         {
             if (String.IsNullOrEmpty(src))
