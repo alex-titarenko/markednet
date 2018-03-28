@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 namespace MarkedNet
 {
     /// <summary>
-    /// Inline Lexer & Compiler
+    /// Inline Lexer and Compiler
     /// </summary>
     public class InlineLexer
     {
