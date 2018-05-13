@@ -46,19 +46,15 @@ namespace MarkedNet
                 }
             }
 
-            transformedCode = (escaped ? code : StringHelper.Escape(code, true));
+            transformedCode = escaped ? transformedCode : StringHelper.Escape(transformedCode, true);
+            var langClass = Options.LangPrefix + StringHelper.Escape(lang ?? string.Empty, true);
 
             if (string.IsNullOrEmpty(lang))
             {
-                return $"<pre><code>{transformedCode}\n</code></pre>";
+                return $"<pre{AttributesToString(this.Options.PreformattedTextAttributes)}><code>{transformedCode}\n</code></pre>";
             }
 
-            return "<pre><code class=\""
-                + Options.LangPrefix
-                + StringHelper.Escape(lang, true)
-                + "\">"
-                + transformedCode
-                + "\n</code></pre>\n";
+            return $"<pre{AttributesToString(this.Options.PreformattedTextAttributes)}><code class='{langClass}'>{transformedCode}\n</code></pre>\n";
         }
 
         public virtual string Blockquote(string quote)
@@ -111,7 +107,7 @@ namespace MarkedNet
         {
             var type = flags.Header ? "th" : "td";
             var tag = !string.IsNullOrEmpty(flags.Align)
-                ? $"<{type} style='text-align:{flags.Align}\">"
+                ? $"<{type} style='text-align:{flags.Align}'>"
                 : $"<{type}>";
 
             return tag + content + $"</{type}>\n";

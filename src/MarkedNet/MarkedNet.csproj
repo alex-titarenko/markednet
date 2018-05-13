@@ -4,7 +4,7 @@
     <RootNamespace>MarkedNet</RootNamespace>
     <AssemblyName>MarkedNet</AssemblyName>
     <Product>MarkedNet</Product>
-    <Version>2.1.0</Version>
+    <Version>2.1.1</Version>
     <Description>A markdown parser and compiler</Description>
     <PackageTags>Markdown Renderer Html Parser</PackageTags>
     <Authors>Alex Titarenko</Authors>

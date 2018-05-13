@@ -51,6 +51,8 @@ namespace MarkedNet
 
         public IDictionary<string, string> ImageAttributes { get; set; }
 
+        public IDictionary <string, string> PreformattedTextAttributes { get; set; }
+
         #endregion
 
         #region Constructors
