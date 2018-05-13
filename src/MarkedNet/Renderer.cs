@@ -49,11 +49,6 @@ namespace MarkedNet
             transformedCode = escaped ? transformedCode : StringHelper.Escape(transformedCode, true);
             var langClass = Options.LangPrefix + StringHelper.Escape(lang ?? string.Empty, true);
 
-            if (string.IsNullOrEmpty(lang))
-            {
-                return $"<pre{AttributesToString(this.Options.PreformattedTextAttributes)}><code>{transformedCode}\n</code></pre>";
-            }
-
             return $"<pre{AttributesToString(this.Options.PreformattedTextAttributes)}><code class='{langClass}'>{transformedCode}\n</code></pre>\n";
         }
 
