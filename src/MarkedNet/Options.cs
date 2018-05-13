@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace MarkedNet
 {
@@ -47,6 +45,12 @@ namespace MarkedNet
 
         public bool SmartLists { get; set; }
 
+        public bool ExternalLinks { get; set; }
+
+        public IDictionary<string, string> TableAttributes { get; set; }
+
+        public IDictionary<string, string> ImageAttributes { get; set; }
+
         #endregion
 
         #region Constructors
@@ -68,6 +72,7 @@ namespace MarkedNet
             Gfm = true;
             Tables = true;
             SmartLists = false;
+            ExternalLinks = true;
         }
 
         #endregion

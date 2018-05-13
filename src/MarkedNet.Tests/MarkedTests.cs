@@ -37,7 +37,7 @@ namespace MarkedNet.Tests
             Assert.IsEmpty(actual);
         }
         
-        [TestCase("# Hello World", "<h1 id=\"hello-world\">Hello World</h1>\n")]
+        [TestCase("# Hello World", "<h1 id='hello-world'>Hello World</h1>\n")]
         public void Parse_MarkdownText_HtmlText(string source, string expected)
         {
             //action
@@ -116,7 +116,7 @@ Numbered list:
 3. pears
 ";
             
-            var expected = "<h1 id=\"heading\">Heading</h1>\n<h2 id=\"sub-heading\">Sub-heading</h2>\n<h3 id=\"another-deeper-heading\">Another deeper heading</h3>\n<p>Paragraphs are separated\nby a blank line.</p>\n<p>Leave 2 spaces at the end of a line to do a<br>line break</p>\n<p>Text attributes <em>italic</em>, <strong>bold</strong>, \n<code>monospace</code>, <del>strikethrough</del> .</p>\n<p>A <a href=\"http://example.com\">link</a>.</p>\n<p>Shopping list:</p>\n<ul>\n<li>apples</li>\n<li>oranges</li>\n<li>pears</li>\n</ul>\n<p>Numbered list:</p>\n<ol>\n<li>apples</li>\n<li>oranges</li>\n<li>pears</li>\n</ol>\n";
+            var expected = "<h1 id='heading'>Heading</h1>\n<h2 id='sub-heading'>Sub-heading</h2>\n<h3 id='another-deeper-heading'>Another deeper heading</h3>\n<p>Paragraphs are separated\nby a blank line.</p>\n<p>Leave 2 spaces at the end of a line to do a<br>line break</p>\n<p>Text attributes <em>italic</em>, <strong>bold</strong>, \n<code>monospace</code>, <del>strikethrough</del> .</p>\n<p>A <a href='http://example.com' target='_blank' rel='nofollow'>link</a>.</p>\n<p>Shopping list:</p>\n<ul>\n<li>apples</li>\n<li>oranges</li>\n<li>pears</li>\n</ul>\n<p>Numbered list:</p>\n<ol>\n<li>apples</li>\n<li>oranges</li>\n<li>pears</li>\n</ol>\n";
 
             //action
             var html = _marked.Parse(markdown);

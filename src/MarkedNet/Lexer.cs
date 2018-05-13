@@ -9,24 +9,24 @@ namespace MarkedNet
 {
     public class Lexer
     {
-        private Options _options;
-        private BlockRules _rules;
+        private readonly Options options;
+        private readonly BlockRules rules;
 
 
         public Lexer(Options options)
         {
-            _options = options ?? new Options();
-            _rules = new NormalBlockRules();
+            this.options = options ?? new Options();
+            this.rules = new NormalBlockRules();
 
-            if (_options.Gfm)
+            if (this.options.Gfm)
             {
-                if (_options.Tables)
+                if (this.options.Tables)
                 {
-                    _rules = new TablesBlockRules();
+                    this.rules = new TablesBlockRules();
                 }
                 else
                 {
-                    _rules = new GfmBlockRules();
+                    this.rules = new GfmBlockRules();
                 }
             }
         }
@@ -67,7 +67,7 @@ namespace MarkedNet
             while (!String.IsNullOrEmpty(src))
             {
                 // newline
-                if ((cap = _rules.Newline.Exec(src)).Any())
+                if ((cap = this.rules.Newline.Exec(src)).Any())
                 {
                     src = src.Substring(cap[0].Length);
                     if (cap[0].Length > 1)
@@ -80,14 +80,14 @@ namespace MarkedNet
                 }
 
                 // code
-                if ((cap = _rules.Сode.Exec(src)).Any())
+                if ((cap = this.rules.Сode.Exec(src)).Any())
                 {
                     src = src.Substring(cap[0].Length);
                     var capStr = Regex.Replace(cap[0], @"^ {4}", "", RegexOptions.Multiline);
                     tokens.Add(new Token
                     {
                         Type = "code",
-                        Text = !_options.Pedantic
+                        Text = !this.options.Pedantic
                           ? Regex.Replace(capStr, @"\n+$", "")
                           : capStr
                     });
@@ -95,7 +95,7 @@ namespace MarkedNet
                 }
 
                 // fences (gfm)
-                if ((cap = _rules.Fences.Exec(src)).Any())
+                if ((cap = this.rules.Fences.Exec(src)).Any())
                 {
                     src = src.Substring(cap[0].Length);
                     tokens.Add(new Token
@@ -108,7 +108,7 @@ namespace MarkedNet
                 }
 
                 // heading
-                if ((cap = _rules.Heading.Exec(src)).Any())
+                if ((cap = this.rules.Heading.Exec(src)).Any())
                 {
                     src = src.Substring(cap[0].Length);
                     tokens.Add(new Token
@@ -121,7 +121,7 @@ namespace MarkedNet
                 }
 
                 // table no leading pipe (gfm)
-                if (top && (cap = _rules.NpTable.Exec(src)).Any())
+                if (top && (cap = this.rules.NpTable.Exec(src)).Any())
                 {
                     src = src.Substring(cap[0].Length);
 
@@ -164,7 +164,7 @@ namespace MarkedNet
                 }
 
                 // lheading
-                if ((cap = _rules.LHeading.Exec(src)).Any())
+                if ((cap = this.rules.LHeading.Exec(src)).Any())
                 {
                     src = src.Substring(cap[0].Length);
                     tokens.Add(new Token
@@ -177,7 +177,7 @@ namespace MarkedNet
                 }
 
                 // hr
-                if ((cap = _rules.Hr.Exec(src)).Any())
+                if ((cap = this.rules.Hr.Exec(src)).Any())
                 {
                     src = src.Substring(cap[0].Length);
                     tokens.Add(new Token
@@ -188,7 +188,7 @@ namespace MarkedNet
                 }
 
                 // blockquote
-                if ((cap = _rules.Blockquote.Exec(src)).Any())
+                if ((cap = this.rules.Blockquote.Exec(src)).Any())
                 {
                     src = src.Substring(cap[0].Length);
 
@@ -213,7 +213,7 @@ namespace MarkedNet
                 }
 
                 // list
-                if ((cap = _rules.List.Exec(src)).Any())
+                if ((cap = this.rules.List.Exec(src)).Any())
                 {
                     src = src.Substring(cap[0].Length);
                     var bull = cap[2];
@@ -225,7 +225,7 @@ namespace MarkedNet
                     });
 
                     // Get each top-level item.
-                    cap = cap[0].Match(_rules.Item);
+                    cap = cap[0].Match(this.rules.Item);
 
                     var next = false;
                     var l = cap.Count;
@@ -245,16 +245,16 @@ namespace MarkedNet
                         if (item.IndexOf("\n ") > -1)
                         {
                             space -= item.Length;
-                            item = !_options.Pedantic
+                            item = !this.options.Pedantic
                               ? Regex.Replace(item, "^ {1," + space + "}", "", RegexOptions.Multiline)
                               : Regex.Replace(item, @"/^ {1,4}", "", RegexOptions.Multiline);
                         }
 
                         // Determine whether the next list item belongs here.
                         // Backpedal if it does not belong in this list.
-                        if (_options.SmartLists && i != l - 1)
+                        if (this.options.SmartLists && i != l - 1)
                         {
-                            var b = _rules.Bullet.Exec(cap[i + 1])[0]; // !!!!!!!!!!!
+                            var b = this.rules.Bullet.Exec(cap[i + 1])[0]; // !!!!!!!!!!!
                             if (bull != b && !(bull.Length > 1 && b.Length > 1))
                             {
                                 src = String.Join("\n", cap.Skip(i + 1)) + src;
@@ -297,15 +297,15 @@ namespace MarkedNet
                 }
 
                 // html
-                if ((cap = _rules.Html.Exec(src)).Any())
+                if ((cap = this.rules.Html.Exec(src)).Any())
                 {
                     src = src.Substring(cap[0].Length);
                     tokens.Add(new Token
                     {
-                        Type = _options.Sanitize
+                        Type = this.options.Sanitize
                           ? "paragraph"
                           : "html",
-                        Pre = (_options.Sanitizer == null)
+                        Pre = (this.options.Sanitizer == null)
                           && (cap[1] == "pre" || cap[1] == "script" || cap[1] == "style"),
                         Text = cap[0]
                     });
@@ -313,7 +313,7 @@ namespace MarkedNet
                 }
 
                 // def
-                if ((top) && (cap = _rules.Def.Exec(src)).Any())
+                if ((top) && (cap = this.rules.Def.Exec(src)).Any())
                 {
                     src = src.Substring(cap[0].Length);
                     tokens.Links[cap[1].ToLower()] = new LinkObj
@@ -325,7 +325,7 @@ namespace MarkedNet
                 }
 
                 // table (gfm)
-                if (top && (cap = _rules.Table.Exec(src)).Any())
+                if (top && (cap = this.rules.Table.Exec(src)).Any())
                 {
                     src = src.Substring(cap[0].Length);
 
@@ -370,7 +370,7 @@ namespace MarkedNet
                 }
 
                 // top-level paragraph
-                if (top && (cap = _rules.Paragraph.Exec(src)).Any())
+                if (top && (cap = this.rules.Paragraph.Exec(src)).Any())
                 {
                     src = src.Substring(cap[0].Length);
                     tokens.Add(new Token
@@ -384,7 +384,7 @@ namespace MarkedNet
                 }
 
                 // text
-                if ((cap = _rules.Text.Exec(src)).Any())
+                if ((cap = this.rules.Text.Exec(src)).Any())
                 {
                     // Top-level should never reach here.
                     src = src.Substring(cap[0].Length);
