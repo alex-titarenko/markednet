@@ -8,8 +8,8 @@
     <Description>A markdown parser and compiler</Description>
     <PackageTags>Markdown Renderer Html Parser</PackageTags>
     <Authors>Alex Titarenko</Authors>
-    <PackageProjectUrl>https://github.com/T-Alex/MarkedNet</PackageProjectUrl>
-    <Copyright>Copyright 2018 Alex Titarenko</Copyright>
+    <PackageProjectUrl>https://github.com/alex-titarenko/markednet</PackageProjectUrl>
+    <Copyright>Copyright 2020 Alex Titarenko</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
