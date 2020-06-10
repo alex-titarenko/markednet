@@ -1,5 +1,5 @@
 # Marked .NET
-[![Build status](https://ci.appveyor.com/api/projects/status/2kmxq916vw9ytjik?svg=true)](https://ci.appveyor.com/project/alex-titarenko/markednet) !
+![Build](https://github.com/alex-titarenko/markednet/workflows/Build/badge.svg?branch=master)
 [![NuGet Version](http://img.shields.io/nuget/v/MarkedNet.svg?style=flat)](https://www.nuget.org/packages/MarkedNet/) [![NuGet Downloads](http://img.shields.io/nuget/dt/MarkedNet.svg?style=flat)](https://www.nuget.org/packages/MarkedNet/)
 
 A full-featured markdown parser and compiler, written in C#. Port of original [marked](https://github.com/chjj/marked) javascript project.
